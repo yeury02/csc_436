@@ -7,9 +7,13 @@ app = Flask(__name__)
 def hello_world():
     return render_template('index.html')
 
-@app.route('/about')
-def about():
-    return render_template('index.html')
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+# @app.route('/about')
+# def about():
+#     return render_template('index.html')
 
 
 
