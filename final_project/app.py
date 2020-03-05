@@ -3,12 +3,9 @@ from passlib.hash import sha256_crypt
 from flask_mysqldb import MySQL
 
 
-
-
 app = Flask(__name__)
 
 #configure db
-
 app.config['MYSQL_USER'] = 'sql9325675'
 app.config['MYSQL_PASSWORD'] = 'fTXVhmuuYA'
 app.config['MYSQL_HOST'] = 'sql9.freemysqlhosting.net'
@@ -37,14 +34,18 @@ def register():
             # insert into database here!
             cur = mysql.connection.cursor()
             if flag:
-                cur.execute('''CREATE TABLE users (name varchar(100) not null, username varchar(100) not null, password varchar(100) not null))''')
+                cur.execute('''CREATE TABLE users (
+                                    name varchar(100) not null, 
+                                    username varchar(100) not null, 
+                                    password varchar(100) not null
+                                    )''')
                 flag = False
-            cur.execute('''INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password)''')
-            mysql.connection.commit()
-            #cur.close()
-            flash("you are registered and can login", "success")
-            return redirect(url_for('login'))
-            pass
+                return "Done"
+            # cur.execute('''INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password)''')
+            # mysql.connection.commit()
+            # #cur.close()
+            # flash("you are registered and can login", "success")
+            # return redirect(url_for('login'))
         else:
             flash("password does not match", "danger")
             return render_template('register.html')
@@ -53,12 +54,6 @@ def register():
 @app.route('/login')
 def login():
     return render_template('login.html')
-
-
-
-# @app.route('/about')
-# def about():
-#     return render_template('index.html')
 
 
 
