@@ -1,14 +1,14 @@
 from flask import Flask, render_template,request,flash, url_for, redirect
 from passlib.hash import sha256_crypt
 from flask_mysqldb import MySQL
-# import yaml
+
 
 
 
 app = Flask(__name__)
 
 #configure db
-#db = yaml.load(open('db.yaml'))
+
 app.config['MYSQL_USER'] = 'sql9325675'
 app.config['MYSQL_PASSWORD'] = 'fTXVhmuuYA'
 app.config['MYSQL_HOST'] = 'sql9.freemysqlhosting.net'
@@ -41,7 +41,7 @@ def register():
                 flag = False
             cur.execute('''INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password)''')
             mysql.connection.commit()
-            cur.close()
+            #cur.close()
             flash("you are registered and can login", "success")
             return redirect(url_for('login'))
             pass
