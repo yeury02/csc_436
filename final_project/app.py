@@ -7,14 +7,14 @@ app = Flask(__name__)
 
 #configure db
 
-db.yaml.load(open(db.yaml))
-app.config['MYSQL_HOST'] = 
-app.config['MYSQL_USER'] = ''
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = ''
+db = yaml.load(open('db.yaml'))
+app.config['MYSQL_HOST'] = db['mysql_host']
+app.config['MYSQL_USER'] = db['mysql_user']
+app.config['MYSQL_PASSWORD'] = db['mysql_password']
+app.config['MYSQL_DB'] = db['mysql_db']
 
 
-# mysql = MySQL(app)
+mysql = MySQL(app)
 
 
 @app.route('/')
@@ -32,21 +32,10 @@ def register():
         secure_password = sha256_crypt.encrypt(str(password))
         
         if password == confirm:
-            db.execute("INSERT INTO users(name, username, password) VALUES(:name, :username, :password)",
-                                            {"name":name,"username":username,"password":secure_password})
-            db.commit()
-            # # insert into database here!
-            # cur = mysql.connection.cursor()
-            # # if flag:
-            # #     cur.execute('''CREATE TABLE users (
-            # #                         name varchar(100) not null, 
-            # #                         username varchar(100) not null, 
-            # #                         password varchar(100) not null
-            # #                         )''')
-            # #     flag = False
-            # cur.execute("INSERT INTO users(name,username,password) VALUES(name, username, secure_password)")
-            # mysql.connection.commit() 
-            # cur.close()
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password))
+            mysql.connection.commit() 
+            cur.close()
             flash("you are registered and can login", "success")
             return redirect(url_for('login'))
         else:
