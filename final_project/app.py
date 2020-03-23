@@ -30,14 +30,22 @@ def register():
         password = request.form.get("password")
         confirm = request.form.get("confirm")
         secure_password = sha256_crypt.encrypt(str(password))
+
+        if name == username:
+            flash ("name and username must be different", "danger")
+            return render_template('register.html')
         
-        if password == confirm:
-            cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password))
-            mysql.connection.commit() 
-            cur.close()
-            flash("you are registered and can login", "success")
-            return redirect(url_for('login'))
+        elif password == confirm:
+            if len(password) and len(confirm) > 7:
+                cur = mysql.connection.cursor()
+                cur.execute("INSERT INTO users(name,username,password) VALUES(%s, %s, %s)", (name, username, password))
+                mysql.connection.commit() 
+                cur.close()
+                flash("you are registered and can login", "success")
+                return redirect(url_for('login'))
+            else:
+                flash ("Password is too short", "danger")
+                return render_template('register.html')
         else:
             flash("password does not match", "danger")
             return render_template('register.html')
@@ -45,24 +53,24 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        username = name.form.get("name")
-        password = request.form.get("password")
+    # if request.method == "POST":
+    #     username = name.form.get("name")
+    #     password = request.form.get("password")
 
-        username_data = cur.execute("SELECT username FROM users WHERE username:=username", {"username":username}).fetcho()
-        password_data = cur.execute("SELECT password FROM users WHERE password:=password", {"password":password}).fetcho()
+    #     username_data = cur.execute("SELECT username FROM users WHERE username:=username", {"username":username}).fetcho()
+    #     password_data = cur.execute("SELECT password FROM users WHERE password:=password", {"password":password}).fetcho()
 
-        if username_data is None:
-            flash("No username", "danger")
-            return render_template("login.html")
-        else:
-            for pass_data in password_data:
-                if sha256.crypt.verify(password, pass_data)
-                    flash("You are now login", "success")
-                    return redirect(url_for("whereever I want")
-                else:
-                    flash ("Incorrect Password")
-                    return render_template("login.html")
+    #     if username_data is None:
+    #         flash("No username", "danger")
+    #         return render_template("login.html")
+    #     else:
+    #         for pass_data in password_data:
+    #             if sha256.crypt.verify(password, pass_data)
+    #                 flash("You are now login", "success")
+    #                 return redirect(url_for("whereever I want")
+    #             else:
+    #                 flash ("Incorrect Password")
+    #                 return render_template("login.html")
 
     return render_template('login.html')
 
