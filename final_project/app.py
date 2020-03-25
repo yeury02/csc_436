@@ -44,7 +44,7 @@ def register():
                 flash("you are registered and can login", "success")
                 return redirect(url_for('login'))
             else:
-                flash ("Password is too short", "danger")
+                flash ("Password is too short!!", "danger")
                 return render_template('register.html')
         else:
             flash("password does not match", "danger")
