@@ -53,28 +53,26 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    # if request.method == "POST":
-    #     username = name.form.get("name")
-    #     password = request.form.get("password")
+    if request.method == "POST":
+        username = name.form.get("name")
+        password = request.form.get("password")
 
-    #     username_data = cur.execute("SELECT username FROM users WHERE username:=username", {"username":username}).fetcho()
-    #     password_data = cur.execute("SELECT password FROM users WHERE password:=password", {"password":password}).fetcho()
+        usernamedata = cur.execute("SELECT username FROM users WHERE username=:username", {"username":username}).fetcho()
+        passworddata = cur.execute("SELECT password FROM users WHERE username=:username", {"username":username}).fetcho()
 
-    #     if username_data is None:
-    #         flash("No username", "danger")
-    #         return render_template("login.html")
-    #     else:
-    #         for pass_data in password_data:
-    #             if sha256.crypt.verify(password, pass_data)
-    #                 flash("You are now login", "success")
-    #                 return redirect(url_for("whereever I want")
-    #             else:
-    #                 flash ("Incorrect Password")
-    #                 return render_template("login.html")
+        if usernamedata is None:
+            flash("No username", "danger")
+            return render_template("login.html")
+        else:
+            for passwor_data in password_data:
+                if sha256_crypt.verify(password, passwor_data):
+                    flash("You are now login", "success")
+                    return redirect(url_for("home.html")
+                else:
+                    flash ("Incorrect Password")
+                    return render_template("login.html")
 
     return render_template('login.html')
-
-
 
 if __name__ == '__main__':
     app.secret_key = "1234567csc436finalproject"
