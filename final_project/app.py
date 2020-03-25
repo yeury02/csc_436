@@ -1,6 +1,6 @@
 from flask import Flask, render_template,request,flash, url_for, redirect
 from passlib.hash import sha256_crypt
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL, MySQLdb
 import yaml
 
 app = Flask(__name__)
@@ -53,26 +53,42 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        username = name.form.get("name")
-        password = request.form.get("password")
-
-        usernamedata = cur.execute("SELECT username FROM users WHERE username=:username", {"username":username}).fetcho()
-        passworddata = cur.execute("SELECT password FROM users WHERE username=:username", {"username":username}).fetcho()
-
-        if usernamedata is None:
-            flash("No username", "danger")
-            return render_template("login.html")
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username" and "password" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        flash(username, password)
+        # Check if account exists using MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
+        # Fetch one record and return result
+        account = cursor.fetchone()
+        # If account exists in accounts table in out database
+        if account:
+            # Create session data, we can access this data in other routes
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['username']
+            # Redirect to home page
+            return 'Logged in successfully!'
         else:
-            for passwor_data in password_data:
-                if sha256_crypt.verify(password, passwor_data):
-                    flash("You are now login", "success")
-                    return redirect(url_for("home.html")
-                else:
-                    flash ("Incorrect Password")
-                    return render_template("login.html")
+            # Account doesnt exist or username/password incorrect
+            msg = 'Incorrect username/password!'
+    # Show the login form with message (if any)
+    return render_template('login.html', msg=msg)
 
-    return render_template('login.html')
+# # http://localhost:5000/python/logout - this will be the logout page
+# @app.route('/pythonlogin/logout')
+# def logout():
+#     # Remove session data, this will log the user out
+#    session.pop('loggedin', None)
+#    session.pop('id', None)
+#    session.pop('username', None)
+#    # Redirect to login page
+#    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.secret_key = "1234567csc436finalproject"
