@@ -51,7 +51,7 @@ def checkDependencies(functionalD:dict):
         # since order of dictionary is not sorted in any way
         # need to traverse through the depencies at least 3 times to make sure
         # we are getting all the values based on depencies
-        for j in range(3):
+        for unused_var in range(3):
             for key in templist:
                 # this checks if our tempval is a key
                 if all([i in tempval for i in key]) == True:
@@ -59,8 +59,6 @@ def checkDependencies(functionalD:dict):
 
         # sort the value and remove all duplicates
         res[keylist[i]]= "".join(sorted(set(tempval)))
-    print(res)
-    print('ww')
     return res
 
 def getMinkey(res:list):
@@ -102,27 +100,33 @@ def findCandidateKey(relation:list, functionalD:dict):
     """
     returns a list of candidate keys
     """
+    print(functionalD, 'aa')
 
     # use the functional dependencies keys to find full functional definition
     rdep = checkDependencies(functionalD)
-    print(rdep)
+    # print(rdep)
 
     # res list and sorting relation and turning it into a string
     res = []
     relation = "".join(sorted(relation))
+    # print(relation, 'he')
+    # print(rdep)
     
     # traverse through all the key for the functional dependencies 
     # to find all possible candidate keys
     for item in rdep:
-
         # this check if one of the depend key equals to a relation right away
         # if so it is a candidate key
         if rdep[item] == relation:
             res += [item]
+            print(res, 'hehehehe')
             continue
+            
+        # print(res)
 
         # compare the key value and the relation to find the missing values
         missing = list(set(relation) - set(rdep[item]))
+        # print(missing)
 
         # using the missing values create different combination of values
         combo = getCombo(len(missing), missing)
@@ -141,7 +145,8 @@ def findCandidateKey(relation:list, functionalD:dict):
     # turn list into a set and back into a list
     # to remove all duplicates 
     res = list(set(res))
-    return getMinkey(res)
+    lol = getMinkey(res)
+    return lol
     
 if __name__ == "__main__":
     # get the length of the relation
@@ -166,7 +171,6 @@ if __name__ == "__main__":
         funcD[x[0]] = x[1]
     for key in funcD:
        print(f"{key} => {funcD[key]}")
-    print(funcD)
     
     candidateKey = findCandidateKey(relation,funcD)
 
