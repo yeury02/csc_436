@@ -59,6 +59,7 @@ if __name__ == '__main__':
     dependencies = sys.argv[len_of_attributes+3:]
 
     dependencies = dep_into_dict(dependencies)
+    print(dependencies)
 
     keys_of_depencies = get_only_keys_of_dependencies(dependencies)
 
