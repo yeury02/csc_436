@@ -38,6 +38,7 @@ def checkDependencies(functionalD:dict):
 
     # get a list of all keys
     keylist = [key for key in functionalD]
+    #print(keylist)
 
     # traverse through the key list
     for i in range(len(keylist)):
@@ -58,6 +59,8 @@ def checkDependencies(functionalD:dict):
 
         # sort the value and remove all duplicates
         res[keylist[i]]= "".join(sorted(set(tempval)))
+    print(res)
+    print('ww')
     return res
 
 def getMinkey(res:list):
@@ -102,6 +105,7 @@ def findCandidateKey(relation:list, functionalD:dict):
 
     # use the functional dependencies keys to find full functional definition
     rdep = checkDependencies(functionalD)
+    print(rdep)
 
     # res list and sorting relation and turning it into a string
     res = []
@@ -142,15 +146,17 @@ def findCandidateKey(relation:list, functionalD:dict):
 if __name__ == "__main__":
     # get the length of the relation
     rLen = int(sys.argv[1])
+   # print(rLen)
     # get the relation as a list
     relation = sys.argv[2:2+rLen]
 
-    print(relation)
-    print('here')
+    #print(relation)
     # get number of functional dependencies
     fLen = int(sys.argv[2+rLen])
+    #print(fLen)
     # get functional dependencies into as a list
     functional = sys.argv[3+rLen:]
+    #print(functional)
 
     # put functional dependencies into hashmap
     funcD = {}
@@ -159,7 +165,8 @@ if __name__ == "__main__":
         x = f.split(',')
         funcD[x[0]] = x[1]
     for key in funcD:
-        print(f"{key} => {funcD[key]}")
+       print(f"{key} => {funcD[key]}")
+    print(funcD)
     
     candidateKey = findCandidateKey(relation,funcD)
 
