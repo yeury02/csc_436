@@ -1,4 +1,6 @@
-# Below is the explanation on how execute my program
+# Group Members: Yeury Galva Liriano, Charles Humphries, Jack Botelho, Stefano Petrarca, Siyi Li
+
+## Below is the explanation on how execute my program
 
 You do not need any alternative libraries to run the program
 
