@@ -60,36 +60,33 @@ def combinations(len_of_missing_vals, missing_vals):
     ans = sorted([list(k) for k in comb],key=len)
     return ans 
 
-def get_final_list_of_candidate_keys(res):
-    result = []
-    mini = len(res[0])
+def get_final_list_of_candidate_keys(final_list):
+    final_ans = []
+    minimo = len(final_list[0])
+    # check for min len other than 1
+    for i in range(1,len(final_list)):
+        tmp1 = len(final_list[i])
+        if tmp1 != 1 and tmp1 < minimo:
+            minimo = len(final_list[i])
+    # get as many results as possible!
+    for item in final_list:
+        if len(item) <= minimo:
+            final_ans+=[item]
 
-    # check for the minimal length of key that is not 1
-    for i in range(1,len(res)):
-        if len(res[i]) != 1 and len(res[i]) < mini:
-            mini = len(res[i])
-    
-    # get all the possible results
-    for item in res:
-        if len(item) <= mini:
-            result+=[item]
-
-    # final check to make sure that the keys whose length is not 1
-    # does not contain a key another candidate key with a length of
-    fRes =[]
-    for item in result:
-        check = True
-        for char in item:
-            if char in result:
-                check = False
+    # final check!!
+    final_check = []
+    for i in final_ans:
+        flag = True
+        for c in i:
+            if c in final_ans:
+                flag = False
                 break
-        if len(item) == 1:
-            check = True
-
-        if check:
-            fRes += ["".join(sorted(item))]
-
-    return fRes
+        if len(i) == 1:
+            flag = True
+        if flag == True:
+            tmp = sorted(i)
+            final_check += ["".join(tmp)]
+    return final_check
 
 def find_possible_candidate_keys(attributes, new_dependencies):
     tmp = []
@@ -102,19 +99,20 @@ def find_possible_candidate_keys(attributes, new_dependencies):
             y = set(new_dependencies[k])
             missing_vals = list(x-y)
             len_of_missing_vals = len(missing_vals)
-
             all_combinations = combinations(len_of_missing_vals, missing_vals)
-
             # check all_combinations and determine if it's a candidate key
             for comb in all_combinations:
-                temp = "".join(sorted(k+"".join(comb)))
-                tempval = "".join(sorted(k+"".join(comb)))
-                for j in range(3):
-                    for key in new_dependencies:
-                        if all([i in tmp for i in key]):
-                            tempval+=new_dependencies[key]
-
-                if "".join(sorted(set(tempval))) == attributes:
+                sorted_combinations = sorted(k+"".join(comb))
+                sorted_combinations2 = sorted(k+"".join(comb))
+                temp = "".join(sorted_combinations)
+                tempval = "".join(sorted_combinations2)
+                for test in range(3):
+                    for k in new_dependencies:
+                        if all([i in tmp for i in k]):
+                            tempval+=new_dependencies[k]
+                tmp = sorted(set(tempval))
+                tmp2 = ''.join(tmp)
+                if tmp2 == attributes:
                     tmp +=[temp]
     # turn list into a set and back into a list
     # to remove all duplicates 
@@ -124,7 +122,7 @@ def find_possible_candidate_keys(attributes, new_dependencies):
 
 def print_candidate_keys(final_keys):
     for each_k in final_keys:
-        print(f'Candidate Keys are: {each_k}')
+        print(f'Candidate Key(s): {each_k}')
 
 if __name__ == '__main__':
 
@@ -138,8 +136,7 @@ if __name__ == '__main__':
     new_dependencies = handle_dependencies(keys_of_depencies, dependencies)  # expands functional dependencies as a dictionary
     attributes = turn_attributes_to_string(attributes)                       # turns list of attributes to sorted string
     final_keys = find_possible_candidate_keys(attributes, new_dependencies) # This is where most of the work is done!!!!
-                                                                            # 
-    print_candidate_keys(final_keys)
+    print_candidate_keys(final_keys)                    # print candidate keys
 
 
 
